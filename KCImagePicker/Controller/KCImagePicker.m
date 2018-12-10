@@ -13,6 +13,9 @@
 
 @interface KCImagePicker ()
 
+@property (nonatomic,strong) UILabel *emptyLabel;
+@property (nonatomic,strong) UIButton *emptyBtn;
+
 @end
 
 @implementation KCImagePicker
@@ -31,12 +34,7 @@
 
 - (instancetype)initWithRootViewController:(UIViewController *)rootViewController
 {
-    KCAlbumViewController *albumVC = [[KCAlbumViewController alloc] init];
-    
-    if (self = [super initWithRootViewController:albumVC]) {
-        [self setup];
-    }
-    return self;
+    return [self init];
 }
 
 - (void)setup
@@ -48,11 +46,30 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    [self pushToAsset];
-}
-
-- (void)setupUI
-{
+    
+    
+    [[KCAssetManager defaultManager] requestAuthorizationWithCompletion:^(NSError * _Nonnull error) {
+        
+        if (error) {
+            
+            [self.view addSubview:self.emptyLabel];
+            [self.view addSubview:self.emptyBtn];
+            
+            [self.emptyLabel sizeToFit];
+            
+            
+            self.emptyLabel.center = CGPointMake(self.view.bounds.size.width * 0.5, 130);
+            
+            
+            [self.emptyBtn sizeToFit];
+            self.emptyBtn.center = CGPointMake(self.view.bounds.size.width * 0.5, CGRectGetMaxY(self.emptyLabel.frame) + 20);
+            
+        }else {
+            
+            [self pushToAsset];
+        }
+        
+    }];
     
 }
 
@@ -60,6 +77,7 @@
 {
     
     [[KCAssetManager defaultManager] fetchCameraRollAlbumsWithCompletion:^(KCAlbumModel * _Nonnull model) {
+        
             KCAssetViewController *assetVC = [[KCAssetViewController alloc] init];
             assetVC.albumModel = model;
             
@@ -71,9 +89,40 @@
     }];
 }
 
+- (void)settingBtnClick
+{
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+}
+
 - (UIViewController *)childViewControllerForStatusBarHidden
 {
     return self.topViewController;
+}
+
+- (UILabel *)emptyLabel
+{
+    if (!_emptyLabel) {
+        _emptyLabel = [[UILabel alloc] init];
+        _emptyLabel.numberOfLines = 0;
+        _emptyLabel.font = [UIFont systemFontOfSize:14];
+        _emptyLabel.text = @"请在iPhone的“设置-隐私-照片”选项中，\n允许App访问你的手机相册。";
+        _emptyLabel.textAlignment = NSTextAlignmentCenter;
+    }
+    return _emptyLabel;
+}
+
+- (UIButton *)emptyBtn
+{
+    if (!_emptyBtn) {
+        _emptyBtn = [UIButton buttonWithType:UIButtonTypeSystem];
+        
+        [_emptyBtn setTitle:@"立即设置" forState:UIControlStateNormal];
+        
+        _emptyBtn.titleLabel.font = [UIFont systemFontOfSize:16];
+        
+        [_emptyBtn addTarget:self action:@selector(settingBtnClick) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _emptyBtn;
 }
 
 @end

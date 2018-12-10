@@ -28,6 +28,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,weak) id<UINavigationControllerDelegate,KCImagePickerDelegate> delegate;
 
 
+//@property (nonatomic,strong) UIImage *selectedImage;
+//@property (nonatomic,strong) UIImage *deselectedImage;
 @property (nonatomic,assign, getter=isEditing) BOOL editing;
 
 

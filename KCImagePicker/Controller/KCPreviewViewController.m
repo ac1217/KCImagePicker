@@ -170,7 +170,8 @@
     [UIView animateWithDuration:0.25 animations:^{
         if (self.fullScreenPreview) {
             
-            self.bottomView.transform = CGAffineTransformMakeTranslation(0, self.bottomView.frame.size.height);
+            
+            self.bottomView.transform = CGAffineTransformMakeTranslation(0, self.view.bounds.size.height - self.bottomView.frame.origin.y);
         }else {
             
             self.bottomView.transform = CGAffineTransformIdentity;
@@ -235,6 +236,12 @@
     CGFloat bottomViewH = 44;
     CGFloat bottomViewW = self.view.bounds.size.width;
     CGFloat bottomViewY = self.view.bounds.size.height - bottomViewH;
+    
+    if (@available(iOS 11.0, *)) {
+        bottomViewY -= [UIApplication sharedApplication].keyWindow.safeAreaInsets.bottom;
+    } else {
+        // Fallback on earlier versions
+    }
     self.bottomView.frame = CGRectMake(0, bottomViewY, bottomViewW, bottomViewH);
     
     self.collectionView.frame = CGRectMake(0, 0, self.view.bounds.size.width + self.layout.minimumLineSpacing, self.view.bounds.size.height);

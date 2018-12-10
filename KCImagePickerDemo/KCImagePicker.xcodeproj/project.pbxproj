@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		071C20D221BE586300D1FB5F /* KCAssetTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 071C20D121BE586300D1FB5F /* KCAssetTransition.m */; };
 		071F4D24215E0D4B00C79445 /* KCAssetManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 071F4D09215E0D4B00C79445 /* KCAssetManager.m */; };
 		071F4D25215E0D4B00C79445 /* KCAlbumViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 071F4D0C215E0D4B00C79445 /* KCAlbumViewController.m */; };
 		071F4D26215E0D4B00C79445 /* KCAssetViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 071F4D0D215E0D4B00C79445 /* KCAssetViewController.m */; };
@@ -47,6 +48,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		071C20D021BE586300D1FB5F /* KCAssetTransition.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KCAssetTransition.h; sourceTree = "<group>"; };
+		071C20D121BE586300D1FB5F /* KCAssetTransition.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KCAssetTransition.m; sourceTree = "<group>"; };
 		071F4D09215E0D4B00C79445 /* KCAssetManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KCAssetManager.m; sourceTree = "<group>"; };
 		071F4D0A215E0D4B00C79445 /* KCAssetManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KCAssetManager.h; sourceTree = "<group>"; };
 		071F4D0C215E0D4B00C79445 /* KCAlbumViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KCAlbumViewController.m; sourceTree = "<group>"; };
@@ -141,6 +144,8 @@
 			children = (
 				071F4D09215E0D4B00C79445 /* KCAssetManager.m */,
 				071F4D0A215E0D4B00C79445 /* KCAssetManager.h */,
+				071C20D021BE586300D1FB5F /* KCAssetTransition.h */,
+				071C20D121BE586300D1FB5F /* KCAssetTransition.m */,
 			);
 			path = Util;
 			sourceTree = "<group>";
@@ -380,6 +385,7 @@
 				071F4D28215E0D4B00C79445 /* KCPreviewViewController.m in Sources */,
 				071F4D2C215E0D4B00C79445 /* KCAssetBottomView.m in Sources */,
 				072C8CEF2150DE1800B19F82 /* main.m in Sources */,
+				071C20D221BE586300D1FB5F /* KCAssetTransition.m in Sources */,
 				071F4D27215E0D4B00C79445 /* KCImagePicker.m in Sources */,
 				072C8CE12150DE1700B19F82 /* AppDelegate.m in Sources */,
 				071F4D2A215E0D4B00C79445 /* KCAlbumModel.m in Sources */,

@@ -10,6 +10,7 @@
 
 @interface KCAssetBottomView ()
 
+@property (nonatomic,strong) CALayer *bgView;
 
 @end
 
@@ -19,11 +20,11 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
+        [self.layer addSublayer:self.bgView];
         [self addSubview:self.funcBtn];
         [self addSubview:self.sendBtn];
         [self addSubview:self.originBtn];
         
-        self.backgroundColor = [UIColor blackColor];
     }
     return self;
 }
@@ -54,7 +55,26 @@
     
     self.sendBtn.frame = CGRectMake(sendBtnX, sendBtnY, sendBtnW, sendBtnH);
     
+    CGFloat bgViewW = self.bounds.size.width;
+    CGFloat bgViewH = self.bounds.size.height;
     
+    if (@available(iOS 11.0, *)) {
+        bgViewH += [UIApplication sharedApplication].keyWindow.safeAreaInsets.bottom;
+    } else {
+        // Fallback on earlier versions
+    }
+    self.bgView.frame = CGRectMake(0, 0, bgViewW, bgViewH);
+    
+    
+}
+
+- (CALayer *)bgView
+{
+    if (!_bgView) {
+        _bgView = [CALayer new];
+        _bgView.backgroundColor = [UIColor blackColor].CGColor;
+    }
+    return _bgView;
 }
 
 - (void)sendBtnClick
@@ -78,11 +98,14 @@
 - (UIButton *)sendBtn
 {
     if (!_sendBtn) {
-        _sendBtn = [UIButton new];
+        _sendBtn = [UIButton buttonWithType:UIButtonTypeSystem];
         
         _sendBtn.titleLabel.font = [UIFont systemFontOfSize:14];
         [_sendBtn setTitle:@"发送" forState:UIControlStateNormal];
+        [_sendBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         _sendBtn.backgroundColor = [UIColor greenColor];
+        _sendBtn.layer.cornerRadius = 5;
+        _sendBtn.clipsToBounds = YES;
         [_sendBtn setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
             [_sendBtn addTarget:self action:@selector(sendBtnClick) forControlEvents:UIControlEventTouchUpInside];
     }

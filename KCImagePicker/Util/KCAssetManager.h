@@ -18,6 +18,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (instancetype)defaultManager;
 
+- (void)requestAuthorizationWithCompletion:(void(^)(NSError *error))cmp;
+
 - (void)fetchAllAlbumsWithCompletion:(void (^)(NSArray<KCAlbumModel *> *))completion;
 - (void)fetchCameraRollAlbumsWithCompletion:(void (^)(KCAlbumModel  *))completion;
 

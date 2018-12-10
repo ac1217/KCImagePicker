@@ -28,8 +28,18 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self setupUI];
-    [self setupData];
     [self setupLayout];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    if (!self.albumModels.count) {
+        [self setupData];
+    }
+    
+    
 }
 
 - (void)setupUI
@@ -64,6 +74,7 @@
 
 - (void)setupData
 {
+    
     [[KCAssetManager defaultManager] fetchAllAlbumsWithCompletion:^(NSArray<KCAlbumModel *> * _Nonnull models) {
         self.albumModels = models;
         [self.collectionView reloadData];

@@ -72,7 +72,17 @@
 {
     CGFloat bottomViewH = 44;
     CGFloat bottomViewW = self.view.bounds.size.width;
+    
+    
+    
     CGFloat bottomViewY = self.view.bounds.size.height - bottomViewH;
+    
+    if (@available(iOS 11.0, *)) {
+        bottomViewY -= [UIApplication sharedApplication].keyWindow.safeAreaInsets.bottom;
+    } else {
+        // Fallback on earlier versions
+    }
+    
     self.bottomView.frame = CGRectMake(0, bottomViewY, bottomViewW, bottomViewH);
     
     

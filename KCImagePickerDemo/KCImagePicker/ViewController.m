@@ -25,7 +25,7 @@
 - (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
     KCImagePicker *ipc = [[KCImagePicker alloc] init];
-    ipc.maxSelectedCount = 1;
+//    ipc.maxSelectedCount = 1;
     [self presentViewController:ipc animated:YES completion:nil];
     
 }

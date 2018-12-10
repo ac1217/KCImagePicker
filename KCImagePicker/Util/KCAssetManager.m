@@ -11,6 +11,72 @@
 
 @implementation KCAssetManager
 
+- (void)requestAuthorizationWithCompletion:(void(^)(NSError *error))cmp
+{
+   PHAuthorizationStatus status = [PHPhotoLibrary authorizationStatus];
+
+    switch (status) {
+            case PHAuthorizationStatusAuthorized:
+            !cmp ? : cmp(nil);
+            break;
+            case PHAuthorizationStatusDenied:
+        {
+            
+            NSError *error = [NSError errorWithDomain:@"KCImagePicker" code:10001 userInfo:@{NSLocalizedFailureReasonErrorKey: @"用户拒绝相册访问权限"}];
+            
+            !cmp ? : cmp(error);
+        }
+            break;
+            case PHAuthorizationStatusRestricted:
+        {
+            
+            NSError *error = [NSError errorWithDomain:@"KCImagePicker" code:10002 userInfo:@{NSLocalizedFailureReasonErrorKey: @"相册访问权限不可用"}];
+            
+            !cmp ? : cmp(error);
+        }
+            break;
+            case PHAuthorizationStatusNotDetermined:
+        {
+            [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    switch (status) {
+                            case PHAuthorizationStatusAuthorized:
+                            !cmp ? : cmp(nil);
+                            break;
+                            case PHAuthorizationStatusDenied:
+                        {
+                            
+                            NSError *error = [NSError errorWithDomain:@"KCImagePicker" code:10001 userInfo:@{NSLocalizedFailureReasonErrorKey: @"用户拒绝相册访问权限"}];
+                            
+                            !cmp ? : cmp(error);
+                        }
+                            break;
+                            case PHAuthorizationStatusRestricted:
+                        {
+                            
+                            NSError *error = [NSError errorWithDomain:@"KCImagePicker" code:10002 userInfo:@{NSLocalizedFailureReasonErrorKey: @"相册访问权限不可用"}];
+                            
+                            !cmp ? : cmp(error);
+                        }
+                            break;
+                            
+                        default:
+                            break;
+                    }
+                });
+                
+            }];
+            
+        }
+            break;
+            
+        default:
+            break;
+    }
+
+}
+
 + (instancetype)defaultManager
 {
     static id instane_ = nil;
