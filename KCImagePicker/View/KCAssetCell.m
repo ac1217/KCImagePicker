@@ -10,7 +10,6 @@
 
 @interface KCAssetCell ()
 
-@property (nonatomic,strong) UIImageView *imageView;
 @property (nonatomic,strong) UILabel *timeLabel;
 
 @end
@@ -42,6 +41,7 @@
         
         [self.selectBtn setTitle:nil forState:UIControlStateNormal];
     }
+    self.selectBtn.selected = selected;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame
@@ -69,9 +69,9 @@
     timeFrame.origin.y = self.contentView.bounds.size.height - timeFrame.size.height - 2;
     self.timeLabel.frame = timeFrame;
     
-    CGFloat selectBtnWH = 30;
-    CGFloat selectBtnX = self.contentView.frame.size.width - selectBtnWH;
-    CGFloat selectBtnY = 0;
+    CGFloat selectBtnWH = 25;
+    CGFloat selectBtnX = self.contentView.frame.size.width - selectBtnWH - 3;
+    CGFloat selectBtnY = 3;
     self.selectBtn.frame = CGRectMake(selectBtnX, selectBtnY, selectBtnWH, selectBtnWH);
     
 }
@@ -127,7 +127,7 @@
 {
     if (!_selectBtn) {
         _selectBtn = [UIButton new];
-        _selectBtn.backgroundColor = [UIColor redColor];
+//        _selectBtn.backgroundColor = [UIColor redColor];
         _selectBtn.titleLabel.font = [UIFont systemFontOfSize:14];
         [_selectBtn addTarget:self action:@selector(selectBtnClick) forControlEvents:UIControlEventTouchUpInside];
     }

@@ -15,6 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic,strong) KCAssetModel *assetModel;
 
+@property (nonatomic, strong) UIImageView *imageView;
 
 - (void)zooming;
 

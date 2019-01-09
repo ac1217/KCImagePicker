@@ -13,6 +13,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface KCAssetCell : UICollectionViewCell
 
+@property (nonatomic,strong) UIImageView *imageView;
+
 @property (nonatomic,strong) KCAssetModel *assetModel;
 
 @property (nonatomic,copy) void(^selectBtnClickBlock)(KCAssetCell *cell);

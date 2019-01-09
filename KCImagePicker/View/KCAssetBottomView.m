@@ -103,10 +103,10 @@
         _sendBtn.titleLabel.font = [UIFont systemFontOfSize:14];
         [_sendBtn setTitle:@"发送" forState:UIControlStateNormal];
         [_sendBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        _sendBtn.backgroundColor = [UIColor greenColor];
+//        _sendBtn.backgroundColor = [UIColor greenColor];
         _sendBtn.layer.cornerRadius = 5;
         _sendBtn.clipsToBounds = YES;
-        [_sendBtn setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
+        [_sendBtn setTitleColor:[UIColor grayColor] forState:UIControlStateDisabled];
             [_sendBtn addTarget:self action:@selector(sendBtnClick) forControlEvents:UIControlEventTouchUpInside];
     }
     return _sendBtn;
@@ -120,7 +120,7 @@
         _originBtn.titleLabel.font = [UIFont systemFontOfSize:14];
         [_originBtn setTitle:@"  原图" forState:UIControlStateNormal];
         
-        [_originBtn setTitleColor:[UIColor redColor] forState:UIControlStateSelected];
+//        [_originBtn setTitleColor:[UIColor redColor] forState:UIControlStateSelected];
         
                 [_originBtn addTarget:self action:@selector(originBtnClick) forControlEvents:UIControlEventTouchUpInside];
     }

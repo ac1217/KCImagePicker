@@ -10,7 +10,15 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface KCAssetTransition : UIPercentDrivenInteractiveTransition<UIViewControllerAnimatedTransitioning>
+@interface KCAssetTransition : NSObject<UIViewControllerAnimatedTransitioning, UINavigationControllerDelegate>
+
+@property (nonatomic,assign) CGRect fromRect;
+@property (nonatomic,assign) CGRect toRect;
+@property (nonatomic,strong) UIImage *image;
+
+
+//@property (nonatomic,weak) UIImageView *fromImageView;
+//@property (nonatomic,weak) UIImageView *toImageView;
 
 @end
 

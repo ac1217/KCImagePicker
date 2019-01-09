@@ -13,6 +13,7 @@
 #import "KCAssetFooterView.h"
 #import "KCImagePicker.h"
 #import "KCAssetBottomView.h"
+#import "KCAssetTransition.h"
 
 @interface KCAssetViewController ()<UICollectionViewDataSource, UICollectionViewDelegate>
 
@@ -52,6 +53,15 @@
     self.title = self.albumModel.name;
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"取消" style:UIBarButtonItemStylePlain target:self action:@selector(cancelBtnClick)];
+    
+    
+    [self.bottomView.originBtn setImage:[UIImage imageNamed:@"nor_img"] forState:UIControlStateNormal];
+    [self.bottomView.originBtn setImage:[UIImage imageNamed:@"org_img"] forState:UIControlStateSelected];
+    
+    
+    KCImagePicker *ip = (KCImagePicker *)self.navigationController;
+    self.bottomView.sendBtn.backgroundColor = ip.themeColor;
+    
 }
 
 
@@ -59,9 +69,9 @@
 {
     KCImagePicker *ip = (KCImagePicker *)self.navigationController;
     
-    if ([ip.delegate respondsToSelector:@selector(imagePickerDidCancel:)]) {
-        [ip.delegate imagePickerDidCancel:ip];
-    }
+//    if ([ip.delegate respondsToSelector:@selector(imagePickerDidCancel:)]) {
+//        [ip.delegate imagePickerDidCancel:ip];
+//    }
     [self dismissViewControllerAnimated:YES completion:nil];
     
 }
@@ -167,6 +177,8 @@
     
     KCImagePicker *ip = (KCImagePicker *)self.navigationController;
     cell.selectBtn.hidden = ip.maxSelectedCount == 1;
+    [cell.selectBtn setBackgroundImage:ip.normalButtonImage forState:UIControlStateNormal];
+    [cell.selectBtn setBackgroundImage:ip.selectedButtonImage forState:UIControlStateSelected];
     
     __weak typeof(self) weakSelf = self;
     cell.selectBtnClickBlock = ^(KCAssetCell * _Nonnull cell) {
@@ -218,20 +230,64 @@
 
 - (void)pushToPreview:(NSArray *)assetModels index:(NSInteger)index
 {
+    KCImagePicker *ip = (KCImagePicker *)self.navigationController;
+    KCAssetTransition *transition = [ip valueForKey:@"transition"];
+    
+    KCAssetModel *assetModel =  [assetModels objectAtIndex:index];
+    
+    NSInteger i = [self.assetModels indexOfObject:assetModel];
+    
+    KCAssetCell *cell = (KCAssetCell *)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:i inSection:0]];
+    transition.image = cell.imageView.image;
+    transition.fromRect = [cell.imageView convertRect:cell.imageView.frame toView:nil];
+    
+    CGFloat imageWidth = assetModel.naturalSize.width;
+    CGFloat imageHeight = assetModel.naturalSize.height;
+    CGFloat maxW = self.view.bounds.size.width;
+    if (imageWidth > maxW) {
+
+        imageHeight = maxW * imageHeight / imageWidth;
+        imageWidth = maxW;
+
+    }
+    CGSize displayImgSize = CGSizeMake(imageWidth, imageHeight);
+    CGFloat width = displayImgSize.width;
+    CGFloat height = displayImgSize.height;
+    CGFloat x = (self.view.bounds.size.width - width) * 0.5;
+    CGFloat y = (self.view.bounds.size.height - height) * 0.5;
+    transition.toRect = CGRectMake(x, y, width, height);
+    
+//    transition.toRect =
+//    transition.fromImageView = cell.imageView;
     
     KCPreviewViewController *previewVC = [KCPreviewViewController new];
     previewVC.currentIndex = index;
     previewVC.assetModels = assetModels;
     previewVC.selectedAssetModels = self.selectedAssetModels;
     previewVC.originalImage = self.isOriginalImage;
-    [self.navigationController pushViewController:previewVC animated:YES];
+    
     __weak typeof(self) weakSelf = self;
+    previewVC.sourceImageViewBlock = ^UIImageView * _Nonnull(int idx) {
+        
+        KCAssetModel *assetModel =  [assetModels objectAtIndex:idx];
+        
+        NSInteger index = [weakSelf.assetModels indexOfObject:assetModel];
+        
+        KCAssetCell *cell = (KCAssetCell *)[weakSelf.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:index inSection:0]];
+        
+        return cell.imageView;
+    };
+    
+    [self.navigationController pushViewController:previewVC animated:YES];
+    
     previewVC.selectedUpdateBlock = ^{
         [weakSelf updateSelectedCount];
     };
     previewVC.orginalImageUpdateBlock = ^(BOOL r) {
+        
         weakSelf.originalImage = r;
         weakSelf.bottomView.originBtn.selected = weakSelf.originalImage;
+        
     };
     
 }
@@ -301,8 +357,8 @@
             
             KCImagePicker *ip = (KCImagePicker *)weakSelf.navigationController;
             
-            if ([ip.delegate respondsToSelector:@selector(imagePicker:didFinishPickingImages:assets:)]) {
-               
+//            if ([ip.delegate respondsToSelector:@selector(imagePicker:didFinishPickingImages:assets:)]) {
+            
                 NSMutableArray *images = @[].mutableCopy;
                 NSMutableArray *assets = @[].mutableCopy;
                 
@@ -325,11 +381,11 @@
                 
                 dispatch_group_notify(group, dispatch_get_main_queue(), ^{
                     
-                    [ip.delegate imagePicker:ip didFinishPickingImages:images assets:assets];
+//                    [ip.delegate imagePicker:ip didFinishPickingImages:images assets:assets];
                     
                 });
                 
-            }
+//            }
             
             
         };
@@ -350,4 +406,5 @@
     }
     return _collectionView;
 }
+
 @end

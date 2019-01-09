@@ -27,4 +27,9 @@
     }];
 }
 
+- (CGSize)naturalSize
+{
+    return CGSizeMake(self.asset.pixelWidth, self.asset.pixelHeight);
+}
+
 @end

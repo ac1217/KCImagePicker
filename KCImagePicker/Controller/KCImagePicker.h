@@ -10,28 +10,28 @@
 
 #import <Photos/Photos.h>
 
-@class KCImagePicker;
+//@class KCImagePicker;
 
-@protocol KCImagePickerDelegate <NSObject>
-
-@optional
-- (void)imagePicker:(KCImagePicker *)picker didFinishPickingImages:(NSArray <UIImage *>*)images assets:(NSArray <PHAsset *>*)assets;
-- (void)imagePickerDidCancel:(KCImagePicker *)picker;
-
-@end
+//@protocol KCImagePickerDelegate <NSObject>
+//
+//@optional
+//- (void)imagePicker:(KCImagePicker *)picker didFinishPickingImages:(NSArray <UIImage *>*)images assets:(NSArray <PHAsset *>*)assets;
+//- (void)imagePickerDidCancel:(KCImagePicker *)picker;
+//
+//@end
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface KCImagePicker : UINavigationController
 
 @property (nonatomic,assign) NSInteger maxSelectedCount;
-@property (nonatomic,weak) id<UINavigationControllerDelegate,KCImagePickerDelegate> delegate;
 
+@property (nonatomic,strong) UIImage *selectedButtonImage;
+@property (nonatomic,strong) UIImage *normalButtonImage;
 
-//@property (nonatomic,strong) UIImage *selectedImage;
-//@property (nonatomic,strong) UIImage *deselectedImage;
 @property (nonatomic,assign, getter=isEditing) BOOL editing;
 
+@property (nonatomic,strong) UIColor *themeColor;
 
 
 @end

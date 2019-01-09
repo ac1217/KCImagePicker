@@ -23,6 +23,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,copy) void(^selectedUpdateBlock)(void);
 @property (nonatomic,copy) void(^orginalImageUpdateBlock)(BOOL);
 
+
+@property (nonatomic,copy) UIImageView *(^sourceImageViewBlock)(int idx);
+
+
 @end
 
 NS_ASSUME_NONNULL_END

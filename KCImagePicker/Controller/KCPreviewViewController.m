@@ -12,6 +12,7 @@
 #import "KCPreviewCell.h"
 #import <AVKit/AVKit.h>
 #import "KCImagePicker.h"
+#import "KCAssetTransition.h"
 
 @interface KCPreviewViewController ()<UICollectionViewDataSource, UICollectionViewDelegate>
 
@@ -26,7 +27,6 @@
 
 @property (nonatomic,strong) AVPlayerViewController *player;
 
-
 @property (nonatomic,strong, readonly) KCPreviewCell *currentCell;
 @property (nonatomic,strong, readonly) KCAssetModel *currentModel;
 
@@ -34,6 +34,7 @@
 
 @property (nonatomic, assign) BOOL playing;
 
+@property (nonatomic, weak) KCImagePicker *imagePicker;
 @end
 
 @implementation KCPreviewViewController
@@ -56,7 +57,9 @@
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
 }
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -66,6 +69,31 @@
     [self setupData];
     [self setupLayout];
     [self setupNotification];
+//    self.navigationController.delegate = self.transition;
+    
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    
+    KCImagePicker *ip = (KCImagePicker *)self.navigationController;
+    KCAssetTransition *transition = [ip valueForKey:@"transition"];
+    transition.image = self.currentCell.imageView.image;
+    transition.fromRect = [self.currentCell.imageView convertRect:self.currentCell.imageView.frame toView:nil];
+    
+    UIImageView *iv = self.sourceImageViewBlock(self.currentIndex);
+    transition.toRect = [iv convertRect:iv.frame toView:nil];
+    
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    
+    KCImagePicker *ip = self.imagePicker;
+    KCAssetTransition *transition = [ip valueForKey:@"transition"];
+    transition.image = nil;
 }
 
 - (void)setupNotification{
@@ -91,7 +119,7 @@
     self.bottomView.originBtn.selected = self.originalImage;
     
     KCImagePicker *ip = (KCImagePicker *)self.navigationController;
-    
+    self.imagePicker = ip;
     if (ip.maxSelectedCount > 1) {
         
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.selectBtn];
@@ -99,6 +127,18 @@
     }else {
         
     }
+    
+    
+    self.bottomView.sendBtn.backgroundColor = ip.themeColor;
+//    KCImagePicker *ip = (KCImagePicker *)self.navigationController;
+    
+    [self.selectBtn setBackgroundImage:ip.selectedButtonImage forState:UIControlStateSelected];
+    
+    [self.selectBtn setBackgroundImage:ip.normalButtonImage forState:UIControlStateNormal];
+    
+    [self.bottomView.originBtn setImage:[UIImage imageNamed:@"nor_img"] forState:UIControlStateNormal];
+    [self.bottomView.originBtn setImage:[UIImage imageNamed:@"org_img"] forState:UIControlStateSelected];
+    
     
     [self.collectionView registerClass:[KCPreviewCell class] forCellWithReuseIdentifier:NSStringFromClass([KCPreviewCell class])];
     
@@ -108,10 +148,14 @@
     
     UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doubleTap)];
     doubleTap.numberOfTapsRequired = 2;
-    
     [self.view addGestureRecognizer:doubleTap];
     
     [singleTap requireGestureRecognizerToFail:doubleTap];
+    
+    
+    UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(pan:)];
+    [self.view addGestureRecognizer:pan];
+    
     
     [self updateBottomView];
     [self updateSelectedCount];
@@ -119,12 +163,91 @@
     
 }
 
+
+- (void)pan:(UIPanGestureRecognizer *)pan
+{
+    
+    CGPoint transition = [pan translationInView:pan.view];
+    
+    UICollectionViewCell *cell = self.collectionView.visibleCells.lastObject;
+    
+    switch (pan.state) {
+            case UIGestureRecognizerStateBegan:
+        {
+//            self.navigationController.delegate = self.tr
+            
+            self.fullScreenPreview = YES;
+            
+            [self updateNavBar];
+            
+        }
+            break;
+            case UIGestureRecognizerStateFailed:
+            case UIGestureRecognizerStateEnded:
+            case UIGestureRecognizerStateCancelled:
+            case UIGestureRecognizerStatePossible:{
+                
+                CGPoint velocity = [pan velocityInView:pan.view];
+                
+                
+                if ((velocity.y > 1000 || transition.y > 200)) {
+                    
+//                    KCImagePicker *ip = (KCImagePicker *)self.navigationController;
+//                    KCAssetTransition *transition = [ip valueForKey:@"transition"];
+//
+//                    transition.fromRect = [self.currentCell.imageView convertRect:self.currentCell.imageView.frame toView:nil];
+//
+//                    UIImageView *iv = self.sourceImageViewBlock(self.currentIndex);
+//                    transition.toRect = [iv convertRect:iv.frame toView:nil];
+                    
+                    [self.navigationController popViewControllerAnimated:YES];
+                    
+                    
+                }else {
+                    
+                    [UIView animateWithDuration:0.25 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+                        
+                        self.view.alpha = 1;
+                        cell.transform = CGAffineTransformIdentity;
+                    } completion:nil];
+                    
+                }
+                
+                self.fullScreenPreview = NO;
+                
+                [self updateNavBar];
+                
+            }
+            break;
+            case UIGestureRecognizerStateChanged:{
+                
+                CGFloat scale = MIN(1, MAX(0.3, 1 - transition.y / [UIScreen mainScreen].bounds.size.height));
+                
+                CGAffineTransform transform = CGAffineTransformMakeTranslation(transition.x / scale, transition.y / scale);
+                
+                if (transition.y > 0) {
+                    
+                    transform = CGAffineTransformConcat(transform, CGAffineTransformMakeScale(scale, scale));
+                }
+                
+                self.view.alpha = scale;
+                
+                cell.transform = transform;
+                
+            }
+            break;
+            
+        default:
+            break;
+    }
+    
+}
+
+
 - (void)doubleTap
 {
     
-    KCPreviewCell *cell = (KCPreviewCell *)[self.collectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:self.currentIndex inSection:0]];
-    
-    [cell zooming];
+    [self.currentCell zooming];
 
 }
 
@@ -149,6 +272,7 @@
                 
                 [self playVideo];
             }
+            
             self.fullScreenPreview = YES;
             
         }
@@ -170,8 +294,18 @@
     [UIView animateWithDuration:0.25 animations:^{
         if (self.fullScreenPreview) {
             
+            CGFloat height = self.bottomView.frame.size.height;
             
-            self.bottomView.transform = CGAffineTransformMakeTranslation(0, self.view.bounds.size.height - self.bottomView.frame.origin.y);
+            if (@available(iOS 11.0, *)) {
+                height += self.view.safeAreaInsets.bottom;
+            } else {
+                // Fallback on earlier versions
+            }
+            
+            self.bottomView.transform = CGAffineTransformMakeTranslation(0, height);
+            
+            
+            
         }else {
             
             self.bottomView.transform = CGAffineTransformIdentity;
@@ -324,6 +458,13 @@
     
     self.selectBtn.selected = [self.selectedAssetModels containsObject:self.currentModel];
     
+    if (self.selectBtn.isSelected) {
+        NSInteger index = [self.selectedAssetModels indexOfObject:self.currentModel];
+        [self.selectBtn setTitle:[NSString stringWithFormat:@"%zd", index + 1] forState:UIControlStateNormal];
+    }else {
+        [self.selectBtn setTitle:nil forState:UIControlStateNormal];
+    }
+    
     if (self.selectedAssetModels.count > 0) {
         
         self.bottomView.sendBtn.enabled = YES;
@@ -360,11 +501,20 @@
     NSInteger currentIndex = (NSInteger)(scrollView.contentOffset.x / (scrollView.frame.size.width) + 0.5);
     
     if (currentIndex != self.currentIndex) {
+        
         [self stopVideo];
         self.currentIndex = currentIndex;
         [self updateBottomView];
         [self updateSelectedCount];
         [self updateNavTitle];
+        
+//        KCImagePicker *ip = (KCImagePicker *)self.navigationController;
+//        KCAssetTransition *transition = [ip valueForKey:@"transition"];
+//        transition.image = self.currentCell.imageView.image;
+//        transition.fromRect = [self.currentCell.imageView convertRect:self.currentCell.imageView.frame toView:nil];
+//        UIImageView *iv = self.sourceImageViewBlock(currentIndex);
+//        transition.toRect = [iv convertRect:iv.frame toView:nil];
+        
     }
     
     
@@ -433,6 +583,7 @@
         // player的控制器对象
         _player = [[AVPlayerViewController alloc] init];
         _player.view.backgroundColor = [UIColor clearColor];
+        _player.view.userInteractionEnabled = NO;
         // 试图的填充模式
         _player.videoGravity = AVLayerVideoGravityResizeAspect;
         // 是否显示播放控制条
@@ -447,13 +598,10 @@
     if (!_selectBtn) {
         _selectBtn = [UIButton new];
         _selectBtn.titleLabel.font = [UIFont systemFontOfSize:14];
-        [_selectBtn setTitle:@"未选中" forState:UIControlStateNormal];
-        [_selectBtn setTitle:@"选中" forState:UIControlStateSelected];
-        
-        [_selectBtn setTitleColor:[UIColor redColor] forState:UIControlStateSelected];
         [_selectBtn addTarget:self action:@selector(selectBtnClick) forControlEvents:UIControlEventTouchUpInside];
     }
     return _selectBtn;
 }
+
 
 @end

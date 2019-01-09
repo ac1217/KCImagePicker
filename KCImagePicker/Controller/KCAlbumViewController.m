@@ -59,9 +59,9 @@
     
     KCImagePicker *ip = (KCImagePicker *)self.navigationController;
     
-    if ([ip.delegate respondsToSelector:@selector(imagePickerDidCancel:)]) {
-        [ip.delegate imagePickerDidCancel:ip];
-    }
+//    if ([ip.delegate respondsToSelector:@selector(imagePickerDidCancel:)]) {
+//        [ip.delegate imagePickerDidCancel:ip];
+//    }
     [self dismissViewControllerAnimated:YES completion:nil];
     
 }

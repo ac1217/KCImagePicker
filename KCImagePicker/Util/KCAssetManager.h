@@ -28,6 +28,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)fetchAssetWithResult:(PHFetchResult *)result completion:(void (^)(NSArray <KCAssetModel *>*))completion;
 
 - (void)fetchVideoWithAsset:(PHAsset *)asset completion:(void (^)(AVAsset* avasset, AVAudioMix* audioMix, NSDictionary* info))completion;
+
+
 @end
 
 NS_ASSUME_NONNULL_END

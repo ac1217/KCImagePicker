@@ -12,7 +12,6 @@
 
 @property (nonatomic, strong) UIScrollView *scrollView;
 
-@property (nonatomic, strong) UIImageView *imageView;
 
 @property (nonatomic, strong) UIImageView *playView;
 @end
@@ -40,6 +39,8 @@
 
 - (void)addPlayerView:(UIView *)view
 {
+//    UIViewControllerInteractiveTransitioning
+//    [self.scrollView addSubview:view];
     [self.contentView insertSubview:view belowSubview:self.playView];
 }
 
@@ -68,11 +69,6 @@
     
     CGFloat width = displayImgSize.width;
     CGFloat height = displayImgSize.height;
-    
-//    if (width > self.imageView.image.size.width) {
-//
-//        self.scrollView.maximumZoomScale = width / self.imageView.image.size.width;
-//    }
     
     CGFloat insetH = (self.contentView.frame.size.width - width) * 0.5;
     CGFloat insetV = (self.contentView.frame.size.height - height) * 0.5;
