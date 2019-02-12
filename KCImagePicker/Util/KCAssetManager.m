@@ -89,6 +89,8 @@
 
 - (void)fetchImageWithAsset:(PHAsset *)asset width:(CGFloat)width completion:(void (^)(UIImage *image,NSDictionary *info))completion
 {
+    
+    
     // 修复获取图片时出现的瞬间内存过高问题
     // 下面两行代码，来自hsjcom，他的github是：https://github.com/hsjcom 表示感谢
     

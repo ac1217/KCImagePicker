@@ -183,8 +183,7 @@
 - (UIImageView *)playView
 {
     if (!_playView) {
-        _playView = [UIImageView new];
-        _playView.backgroundColor = [UIColor redColor];
+        _playView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"play_img"]];
     }
     return _playView;
 }

@@ -12,7 +12,10 @@
 #import "KCAssetManager.h"
 #import "KCAssetTransition.h"
 
-@interface KCImagePicker ()
+@interface KCImagePicker () {
+    
+    KCImagePickerAppearance *_appearance;
+}
 
 @property (nonatomic,strong) UILabel *emptyLabel;
 @property (nonatomic,strong) UIButton *emptyBtn;
@@ -43,8 +46,8 @@
 - (void)setup
 {
     self.maxSelectedCount = 9;
-    
-    self.delegate = self.transition;
+    _appearance = [KCImagePickerAppearance new];
+//    self.delegate = self.transition;
 }
 
 - (void)viewDidLoad {
@@ -78,12 +81,10 @@
 
 - (void)pushToAsset
 {
-    
     [[KCAssetManager defaultManager] fetchCameraRollAlbumsWithCompletion:^(KCAlbumModel * _Nonnull model) {
         
         KCAssetViewController *assetVC = [[KCAssetViewController alloc] init];
         assetVC.albumModel = model;
-        
         [self pushViewController:assetVC animated:NO];
       
     }];
@@ -127,32 +128,6 @@
     return _emptyBtn;
 }
 
-- (UIImage *)normalButtonImage
-{
-    if (_normalButtonImage) {
-        return _normalButtonImage;
-    }
-    
-    return [UIImage imageNamed:@"deselect_img"];
-}
-
-- (UIImage *)selectedButtonImage
-{
-    if (_selectedButtonImage) {
-        return _selectedButtonImage;
-    }
-    
-    return [UIImage imageNamed:@"select_img"];
-    
-}
-
-- (UIColor *)themeColor
-{
-    if (_themeColor) {
-        return _themeColor;
-    }
-    return [UIColor colorWithRed:106/256.0 green:184/256.0 blue:77/256.0 alpha:1];
-}
 
 - (KCAssetTransition *)transition
 {

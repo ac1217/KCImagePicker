@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 #import <Photos/Photos.h>
+#import "KCImagePickerAppearance.h"
 
 //@class KCImagePicker;
 
@@ -24,15 +25,17 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface KCImagePicker : UINavigationController
 
+@property (nonatomic,strong, readonly) KCImagePickerAppearance *appearance;
+
 @property (nonatomic,assign) NSInteger maxSelectedCount;
 
-@property (nonatomic,strong) UIImage *selectedButtonImage;
-@property (nonatomic,strong) UIImage *normalButtonImage;
 
 @property (nonatomic,assign, getter=isEditing) BOOL editing;
 
 @property (nonatomic,strong) UIColor *themeColor;
 
+@property (nonatomic,strong) UIImage *selectedButtonImage;
+@property (nonatomic,strong) UIImage *normalButtonImage;
 
 @end
 
